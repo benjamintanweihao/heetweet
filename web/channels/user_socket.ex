@@ -2,7 +2,7 @@ defmodule Heetweet.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  # channel "rooms:*", Heetweet.RoomChannel
+  channel "tweets:lobby", Heetweet.RoomChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket

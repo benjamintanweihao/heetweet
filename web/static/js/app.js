@@ -20,5 +20,5 @@ import "phoenix_html"
 
 import "./heetweet"
 
-// import socket from "./socket"
+import socket from "./socket"
 
