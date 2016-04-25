@@ -7,21 +7,17 @@ defmodule Heetweet.RoomChannel do
 
   # Channels can be used in a request/response fashion
   # by sending replies to requests from the client
+
   def handle_in("start_stream", payload, socket) do
-    stream = ExTwitter.stream_sample
-    for tweet <- stream do
-      IO.puts tweet.text
-      push socket, "new_tweet", %{tweet: tweet}
+    stream = ExTwitter.stream_filter(locations: ['-180,-90,180,90'])
+    |> Stream.map(fn x -> x.coordinates end)
+
+    # Twitter gives us coordinates in reverse order (long first, then lat)
+    for %{coordinates: [lng, lat]} <- stream do
+      push socket, "new_tweet", %{lat: lat, lng: lng}
     end
 
     {:reply, {:ok, payload}, socket}
-  end
-
-  # It is also common to receive messages from the client and
-  # broadcast to everyone in the current topic (tweets:lobby).
-  def handle_in("shout", payload, socket) do
-    broadcast socket, "shout", payload
-    {:noreply, socket}
   end
 
   # This is invoked every time a notification is being broadcast
